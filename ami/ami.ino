@@ -46,26 +46,25 @@ SignatureInfo signatureMap[] = {
 };
 
 Medication medicationMap[] = {
-  {1, 10, 30}
-  {2, 16, 0}
-  {3, 18, 15}
-  {4, 22, 0}
-}
+  {1, 10, 30},
+  {2, 16, 0},
+  {3, 18, 15},
+  {4, 22, 0},
+};
 
 void setup()
 {
   Serial.begin(115200);
   Serial.print("Starting...\n");
   pixy.init();
-  setTime(23,40,0,7,3,24);
+  setTime(17,12,0,8,3,24);
 }
 
 void loop()
 { 
   int i;
-  int sigCounts[5] = {0};
+  int sigCounts[5] = {0}; // sigCounts[0] never used because sigs start on 1
 
-  Serial.println("----");
   digitalClockDisplay();
   // grab blocks!
   pixy.ccc.getBlocks();
@@ -73,27 +72,23 @@ void loop()
   // ver se o tempo atual é o mesmo que um dos medicamentos
   // ao se tá dentro dos 5 minutos
   
-  // If there are detect blocks, print them!
-  if (pixy.ccc.numBlocks)
-  {
-    for (i=0; i<pixy.ccc.numBlocks; i++)
-    {
+  // place blocks in the corresponding signature entry
+  for (i=0; i<pixy.ccc.numBlocks; i++) {
       int sig = pixy.ccc.blocks[i].m_signature;
       sigCounts[sig]++;
-    }
+  }
 
-    // Print the counts for each signature
-    for (int sig = 1; sig <= 4; sig++) {
-      Serial.print(signatureMap[sig-1].name); // starts on 0
-      Serial.print(": ");
-      Serial.println(sigCounts[sig]);
-    }
+  // Print the counts for each signature
+  for (int sig = 1; sig <= 4; sig++) {
+    //Serial.print(signatureMap[sig-1].name); // Map starts on 0
+    //Serial.print(": ");
+    Serial.print(sigCounts[sig]);
+    Serial.print(" ");
   }
 
   // ver se o inventário mudou desde a última vez
   // se sim e baixou mandar alerta
-
-
+  Serial.println("");
   delay(60000);
 }
 
@@ -101,14 +96,13 @@ void digitalClockDisplay()
 {
   Serial.print(hour());
   printDigits(minute());
-  printDigits(second());
   Serial.print(" ");
   Serial.print(day());
-  Serial.print(" ");
+  Serial.print("/");
   Serial.print(month());
-  Serial.print(" ");
+  Serial.print("/");
   Serial.print(year());
-  Serial.println();  
+  Serial.print(" ");  
 }
 
 void printDigits(int digits)
