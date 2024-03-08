@@ -32,12 +32,25 @@ struct SignatureInfo {
   const char* name;
 };
 
+struct Medication {
+  int id;
+  int hour;
+  int minute;
+};
+
 SignatureInfo signatureMap[] = {
   {1, "Orange"},
   {2, "Blue"},
   {3, "Green"},
   {4, "Purple"},
 };
+
+Medication medicationMap[] = {
+  {1, 10, 30}
+  {2, 16, 0}
+  {3, 18, 15}
+  {4, 22, 0}
+}
 
 void setup()
 {
@@ -56,6 +69,9 @@ void loop()
   digitalClockDisplay();
   // grab blocks!
   pixy.ccc.getBlocks();
+
+  // ver se o tempo atual é o mesmo que um dos medicamentos
+  // ao se tá dentro dos 5 minutos
   
   // If there are detect blocks, print them!
   if (pixy.ccc.numBlocks)
@@ -73,6 +89,11 @@ void loop()
       Serial.println(sigCounts[sig]);
     }
   }
+
+  // ver se o inventário mudou desde a última vez
+  // se sim e baixou mandar alerta
+
+
   delay(60000);
 }
 
