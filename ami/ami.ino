@@ -32,24 +32,10 @@ struct SignatureInfo {
   const char* name;
 };
 
-struct Medication {
-  int id;
-  int hour;
-  int minute;
-};
-
 SignatureInfo signatureMap[] = {
-  {1, "Orange"},
-  {2, "Blue"},
+  {1, "Blue"},
+  {2, "Pink"},
   {3, "Green"},
-  {4, "Purple"},
-};
-
-Medication medicationMap[] = {
-  {1, 10, 30},
-  {2, 16, 0},
-  {3, 18, 15},
-  {4, 22, 0},
 };
 
 void setup()
@@ -57,20 +43,17 @@ void setup()
   Serial.begin(115200);
   Serial.print("Starting...\n");
   pixy.init();
-  setTime(17,12,0,8,3,24);
+  setTime(18,1,0,8,3,24);
 }
 
 void loop()
 { 
   int i;
-  int sigCounts[5] = {0}; // sigCounts[0] never used because sigs start on 1
+  int sigCounts[4] = {0}; // sigCounts[0] never used because sigs start on 1
 
   digitalClockDisplay();
   // grab blocks!
   pixy.ccc.getBlocks();
-
-  // ver se o tempo atual é o mesmo que um dos medicamentos
-  // ao se tá dentro dos 5 minutos
   
   // place blocks in the corresponding signature entry
   for (i=0; i<pixy.ccc.numBlocks; i++) {
@@ -79,15 +62,13 @@ void loop()
   }
 
   // Print the counts for each signature
-  for (int sig = 1; sig <= 4; sig++) {
+  for (int sig = 1; sig <= 3; sig++) {
     //Serial.print(signatureMap[sig-1].name); // Map starts on 0
     //Serial.print(": ");
     Serial.print(sigCounts[sig]);
     Serial.print(" ");
   }
-
-  // ver se o inventário mudou desde a última vez
-  // se sim e baixou mandar alerta
+  
   Serial.println("");
   delay(60000);
 }

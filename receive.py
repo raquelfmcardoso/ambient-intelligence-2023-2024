@@ -6,15 +6,9 @@ import random
 
 TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
 DEVICE_LABEL = "My_PC"
-VARIABLE_LABEL_1 = "hours"
-VARIABLE_LABEL_2 = "minutes"
-VARIABLE_LABEL_3 = "day"
-VARIABLE_LABEL_4 = "month"
-VARIABLE_LABEL_5 = "year"
-VARIABLE_LABEL_6 = "medication 1"
-VARIABLE_LABEL_7 = "medication 2"
-VARIABLE_LABEL_8 = "medication 3"
-VARIABLE_LABEL_9 = "medication 4"
+VARIABLE_LABEL_1 = "medication 1"
+VARIABLE_LABEL_2 = "medication 2"
+VARIABLE_LABEL_3 = "medication 3"
 
 # Open serial connection to Arduino
 ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
@@ -22,19 +16,13 @@ print("Reading data from serial port.....");
 time.sleep(2)
 ser.reset_input_buffer() # Delete any stale data.
 
-def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8, variable_9, data):
+def build_payload(variable_1, variable_2, variable_3, data):
     # Creates six random values for sending data
-    value_1 = int(data[0])
-    value_2 = int(data[1])
-    value_3 = int(data[2])
-    value_4 = int(data[3])
-    value_5 = int(data[4])
-    value_6 = int(data[5])
-    value_7 = int(data[6])
-    value_8 = int(data[7])
-    value_9 = int(data[8])
+    value_1 = int(data[5])
+    value_2 = int(data[6])
+    value_3 = int(data[7])
 
-    payload = {variable_1: value_1, variable_2: value_2, variable_3: value_3, variable_4: value_4, variable_5: value_5, variable_6: value_6, variable_7: value_7, variable_8: value_8, variable_9: value_9}
+    payload = {variable_1: value_1, variable_2: value_2, variable_3: value_3}
 
     return payload
 
@@ -77,8 +65,8 @@ def main():
         tmp = rxdata.replace(':', ' ').replace('/', ' ').split()
         
         #send collected data to cloud as a payload
-        payload = build_payload(VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8, VARIABLE_LABEL_9, tmp)
-        print(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],tmp[8])
+        payload = build_payload(VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, tmp)
+        print(tmp[5],tmp[6],tmp[7])
         del tmp #clear received data
 
         print("Data transfer started")
