@@ -2,6 +2,7 @@ import requests
 import time
 import datetime
 import serial
+import threading
 
 TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
 DEVICE_LABEL = "my_pc"
@@ -17,7 +18,8 @@ VARIABLE_LABELS = [
     "medication3-minute"
 ]
 
-ser = serial.Serial('COM5', 115200)  # Replace 'COM4' with the appropriate COM port
+ser = serial.Serial('COM5', 115200)  # Replace 'COM5' with the appropriate COM port
+ser_lock = threading.Lock()  # Lock for serial access
 
 def get_request(label):
     variable_data = {}
@@ -54,20 +56,30 @@ def timestamp_conversion(time):
     
     return (date, hour)
 
-def print_to_serial(variable_data):
-    message = f"{variable_data['timestamp'][0], variable_data['timestamp'][1]}, {variable_data['value']}"
-    ser.write(message.encode())
-    print(message)
+def print_to_serial(label, variable_data):
+    message = f"{label},{variable_data['timestamp'][1]},{variable_data['value']}\n"
+    with ser_lock:
+        ser.write(message.encode())
+    #print(message.strip())
+
+def read_from_serial():
+    while True:
+        with ser_lock:
+            if ser.in_waiting > 0:
+                received_data = ser.readline().decode().strip()
+                print("Received from Arduino:", received_data)
 
 def main():
     for label in VARIABLE_LABELS:
         variable_data = get_request(label)
         if variable_data:
             print(variable_data)
-            print_to_serial(variable_data)
+            print_to_serial(label, variable_data)
     time.sleep(60)
 
 if __name__ == '__main__':
-    while (True):
+    read_thread = threading.Thread(target=read_from_serial)
+    read_thread.start()
+    while True:
         main()
         time.sleep(1)
