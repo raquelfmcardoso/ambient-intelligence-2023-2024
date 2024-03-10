@@ -18,7 +18,7 @@ VARIABLE_LABELS = [
     "medication3-minute"
 ]
 
-ser = serial.Serial('COM5', 115200)  # Replace 'COM5' with the appropriate COM port
+ser = serial.Serial('COM6', 115200)  # Replace 'COM5' with the appropriate COM port
 ser_lock = threading.Lock()  # Lock for serial access
 
 def get_request(label):
@@ -60,6 +60,8 @@ def print_to_serial(label, variable_data):
     message = f"{label},{variable_data['timestamp'][1]},{variable_data['value']}\n"
     with ser_lock:
         ser.write(message.encode())
+        print(message)
+        #time.sleep(2)
     #print(message.strip())
 
 def read_from_serial():
