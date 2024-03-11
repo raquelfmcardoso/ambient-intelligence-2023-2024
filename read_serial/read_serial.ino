@@ -12,8 +12,8 @@ void setup() {
 }
 
 struct VariableInfo {
-  const char* label;
-  const char* timestamp;
+  String label;
+  String timestamp;
   int value;
 };
 
@@ -43,17 +43,21 @@ void loop() {
 
       // Create a new VariableInfo object
       VariableInfo data;
-      data.label = label.c_str();
-      data.timestamp = timestamp.c_str();
+      data.label = label;
+      data.timestamp = timestamp;
       data.value = intValue;
 
       // Store the VariableInfo object in the array
       variableData[i] = data;
 
       // Print received data back to the serial port
-      Serial.println("Received Label: " + label);
-      Serial.println("Received Timestamp: " + timestamp);
-      Serial.println("Received Value: " + value);
+      Serial.println("Received Label: " + variableData[i].label);
+      Serial.println("Received Timestamp: " + variableData[i].timestamp);
+      Serial.println("Received Value: " + String(variableData[i].value));
+
+      //Serial.println("Variable Data label: " + variableData[i].label);
+      //Serial.println("Variable Data timestamp: " + variableData[i].timestamp);
+      //Serial.println("Variable Data value: " + variableData[i].value);
     }
   }
 }
