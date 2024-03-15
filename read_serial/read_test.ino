@@ -55,7 +55,7 @@ struct VariableInfo {
   String label;
   String timestamp;
   int value;
-  //int previousValue; (idunno how to get it)
+  int lastValue;
 };
 
 // Pins corresponding to each medication time
@@ -63,9 +63,10 @@ const int medPresPins[3] = {PIN_RGB, PIN_2COLOR, PIN_2CMINI};
 
 HourMinute medPres[3]; // Array to hold the medication times
 int medInventory[3] = {0};
+int medLastValue[3] = {0};
 
 void setup() {
-  Serial.begin(115200); // Make sure to set the baud rate to match your Python script
+  Serial.begin(115200); // Make sure to set the baud rate to match the Python script
   //pinMode(PIN_RED,   OUTPUT);
   //pinMode(PIN_GREEN, OUTPUT);
   //pinMode(PIN_BLUE,  OUTPUT);
@@ -85,7 +86,7 @@ void setup() {
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
 
-  //disconnect WiFi as it's no longer needed
+  //disconnect WiFi as it's no longer needed (provavelmente vale mais apena manter connected inves de dar connect again pra a cena do sms mas dps vemos)
   WiFi.disconnect(true);
   WiFi.mode(WIFI_OFF);
 }
@@ -167,47 +168,41 @@ void loop() {
       // Find the positions of the delimiters
       int comma1 = information.indexOf(',');
       int comma2 = information.indexOf(',', comma1 + 1);
+      int comma3 = information.indexOf(',', comma2 + 1);
 
       // Extract substrings
       String label = information.substring(0, comma1);
       String timestamp = information.substring(comma1 + 1, comma2);
       String value = information.substring(comma2 + 1);
+      String lastValue = information.substring(comma3 + 1);
 
       // Convert value to integer
       int intValue = value.toInt();
+      int intLastValue = lastValue.toInt();
 
       // Create a new VariableInfo object
       VariableInfo data;
       data.label = label;
       data.timestamp = timestamp;
       data.value = intValue;
+      data.lastValue = intLastValue;
 
       // Store the VariableInfo object in the array
       variableData[i] = data;
 
-      // Print received data back to the serial port
-      Serial.println("Received Label: " + variableData[i].label);
-      Serial.println("Received Timestamp: " + variableData[i].timestamp);
-      Serial.println("Received Value: " + String(variableData[i].value));
-
       //TOTALK:im so sorry this is so hardcoded
-      if (i == 3 || i == 5 || i == 7) {
+      if (i == 4 || i == 6 || i == 8) {
         HourMinute time;
-        time.hour = variableData[i].value;
-        time.minute = variableData[i+1].value;
+        time.hour = variableData[i-1].value;
+        time.minute = variableData[i].value;
       
-        medPres[(i-3)/2] = time;
+        medPres[(i-4)/2] = time;
       }
 
       if (i == 0 || i == 1 || i == 2) {
         medInventory[i] = variableData[i].value;
-        medPreviousValue[i] = variableData[i].previousValue;
+        medLastValue[i] = variableData[i].lastValue;
       }
-
-      //Serial.println("Variable Data label: " + variableData[i].label);
-      //Serial.println("Variable Data timestamp: " + variableData[i].timestamp);
-      //Serial.println("Variable Data value: " + variableData[i].value);
-
     }
   }
 
@@ -220,19 +215,19 @@ void loop() {
       digitalWrite(medPresPins[i], HIGH);
       buzz();
 
-      if (medInventory[i] == previousValue[i] - 1) {
+      if (medInventory[i] == medLastValue[i] - 1) {
         Serial.println("Medicine taken");
         digitalWrite(medPresPins[i], LOW);
         stopBuzz();
       }
-      else if (medInventory[i] == previousValue[i]) {
+      else if (medInventory[i] == medLastValue[i]) {
         Serial.println("Medicine not taken");
         buzzerStartTime = millis(); // Record the start time of the buzzer
         //digitalWrite(medPresPins[i], HIGH);
         //buzz(); 
 
         // Wait for 10 seconds or until inventory changes
-        while ((millis() - buzzerStartTime < buzzDuration) && (medInventory[i] == previousValue[i])) {
+        while ((millis() - buzzerStartTime < buzzDuration) && (medInventory[i] == medLastValue[i])) {
           // Check if inventory has changed
           // Read from the serial port for any new data
 
