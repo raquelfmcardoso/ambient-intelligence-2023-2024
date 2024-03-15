@@ -15,6 +15,7 @@ struct VariableInfo {
   String label;
   String timestamp;
   int value;
+  int lastValue;
 };
 
 void loop() {
@@ -32,20 +33,24 @@ void loop() {
       // Find the positions of the delimiters
       int comma1 = information.indexOf(',');
       int comma2 = information.indexOf(',', comma1 + 1);
+      int comma3 = information.indexOf(',', comma2 + 1);
 
       // Extract substrings
       String label = information.substring(0, comma1);
       String timestamp = information.substring(comma1 + 1, comma2);
       String value = information.substring(comma2 + 1);
+      String lastValue = information.substring(comma3 + 1);
 
       // Convert value to integer
       int intValue = value.toInt();
+      int intLastValue = lastValue.toInt();
 
       // Create a new VariableInfo object
       VariableInfo data;
       data.label = label;
       data.timestamp = timestamp;
       data.value = intValue;
+      data.lastValue = intLastValue;
 
       // Store the VariableInfo object in the array
       variableData[i] = data;
@@ -54,6 +59,7 @@ void loop() {
       Serial.println("Received Label: " + variableData[i].label);
       Serial.println("Received Timestamp: " + variableData[i].timestamp);
       Serial.println("Received Value: " + String(variableData[i].value));
+      Serial.println("Received Last Value: " + String(variableData[i].lastValue));
 
       //Serial.println("Variable Data label: " + variableData[i].label);
       //Serial.println("Variable Data timestamp: " + variableData[i].timestamp);
