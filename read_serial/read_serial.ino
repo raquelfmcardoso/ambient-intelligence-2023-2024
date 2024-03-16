@@ -163,11 +163,9 @@ void checkAlarm(int i) {
         alarmFlag[i] = 1;
         buzzer();
       }
-    } else {
-      if (inventory[i].value < inventory[i].lastValue) {
+    } else if (inventory[i].value < inventory[i].lastValue) {
         sendHttp("The pill " + String(i+1) + " was taken at the incorrect time.");
       }
-    }
   } else if (alarmFlag[i] == 1) {
     if (inventory[i].value < inventory[i].lastValue) {
       sendHttp("The pill " + String(i+1) + " was taken at the correct time.");
@@ -175,8 +173,7 @@ void checkAlarm(int i) {
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
       }
-    }
-    if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
+    } else if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
       sendHttp("Already passed 5 minutes since the time to take the pill " + String(i+1) + ".");
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
