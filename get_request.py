@@ -18,7 +18,7 @@ VARIABLE_LABELS = [
     "medication3-minute"
 ]
 
-ser = serial.Serial('COM6', 115200)  # Replace 'COM5' with the appropriate COM port
+ser = serial.Serial('COM4', 115200)  # Replace 'COM5' with the appropriate COM port
 ser_lock = threading.Lock()  # Lock for serial access
 
 def get_request(label):
