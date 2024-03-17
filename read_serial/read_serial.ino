@@ -48,8 +48,10 @@ struct Inventory {
 VariableInfo variableData[MAX_VARIABLES]; // Array of VariableInfo objects
 HourMinute prescribedTime[MAX_MEDS];
 Inventory inventory[MAX_MEDS];
+
 int alarmFlag[MAX_MEDS] = {0}; //Normal status = 0, Alarm ring = 1
 int statusFlag = 0; //Status normal
+
 String startDownTime;
 String endDownTime;
 String message;
@@ -136,7 +138,7 @@ void loop() {
           }
           endDownTime = createDateString(timeinfo);
 
-          sendHttp("UPDATE: Cloud is back. It was down from " + startDownTime + " until " + endDownTime + ". You may receive some unexpected alerts.");
+          sendHttp("UPDATE: Cloud is back. It was down from " + startDownTime + " to " + endDownTime + ". You may receive some unexpected alerts.");
           statusFlag = 0;
           analogWrite(PIN_RGB_RED, 0);
           analogWrite(PIN_2COLOR_RED, 0);
@@ -191,19 +193,19 @@ String sendMessage(String msg) {
 
 String createDateString(struct tm timeinfo) {
   char weekDay[10];
-  strftime(weekDay,10, "%A", &timeinfo);
+  strftime(weekDay, 10, "%A", &timeinfo);
   char month[10];
   strftime(month, 10, "%B", &timeinfo);
   char year[5];
-  strftime(year,5, "%Y", &timeinfo);
+  strftime(year, 5, "%Y", &timeinfo);
   char day[3];
   strftime(day, 3, "%d", &timeinfo);
   char hour[3];
-  strftime(hour,3, "%H", &timeinfo);
+  strftime(hour, 3, "%H", &timeinfo);
   char min[3];
-  strftime(min,3, "%M", &timeinfo);
+  strftime(min, 3, "%M", &timeinfo);
   char sec[3];
-  strftime(sec,3, "%S", &timeinfo);
+  strftime(sec, 3, "%S", &timeinfo);
 
   String date = String(weekDay) + ", " + String(month) + " " + String(day) + " " + String(year) + " " + String(hour) + ":" + String(min) + ":" + String(sec);
   return date;
