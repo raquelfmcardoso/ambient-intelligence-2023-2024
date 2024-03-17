@@ -19,39 +19,24 @@
 //
 // https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:hooking_up_pixy_to_a_microcontroller_-28like_an_arduino-29
 //
-  
+
 #include <Pixy2.h>
-#include <Time.h>
-#include <TimeLib.h>
 
 // This is the main Pixy object 
 Pixy2 pixy;
-
-struct SignatureInfo {
-  int id;
-  const char* name;
-};
-
-SignatureInfo signatureMap[] = {
-  {1, "Blue"},
-  {2, "Pink"},
-  {3, "Green"},
-};
 
 void setup()
 {
   Serial.begin(115200);
   Serial.print("Starting...\n");
   pixy.init();
-  setTime(18,1,0,8,3,24);
 }
 
 void loop()
 { 
   int i;
   int sigCounts[4] = {0}; // sigCounts[0] never used because sigs start on 1
-
-  digitalClockDisplay();
+  
   // grab blocks!
   pixy.ccc.getBlocks();
   
@@ -63,8 +48,6 @@ void loop()
 
   // Print the counts for each signature
   for (int sig = 1; sig <= 3; sig++) {
-    //Serial.print(signatureMap[sig-1].name); // Map starts on 0
-    //Serial.print(": ");
     Serial.print(sigCounts[sig]);
     Serial.print(" ");
   }
@@ -72,25 +55,3 @@ void loop()
   Serial.println("");
   delay(60000);
 }
-
-void digitalClockDisplay()
-{
-  Serial.print(hour());
-  printDigits(minute());
-  Serial.print(" ");
-  Serial.print(day());
-  Serial.print("/");
-  Serial.print(month());
-  Serial.print("/");
-  Serial.print(year());
-  Serial.print(" ");  
-}
-
-void printDigits(int digits)
-{
-  Serial.print(":");
-  if(digits < 10)
-    Serial.print('0');
-  Serial.print(digits);
-}
-
