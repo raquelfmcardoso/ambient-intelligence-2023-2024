@@ -4,7 +4,6 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include "time.h"
-#include "pitches.h"
 
 #define BUZZER_PIN D4
 #define PIN_RGB_RED    D1
@@ -24,6 +23,9 @@ const char WIFI_PASSWORD[] = "RF4BCz3Dzn";
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;
 const int   daylightOffset_sec = 0; //DAYLIGHT SAVINGS ARE A MESS, SOMEHOW THE FUCTION CONSIDERS THAT WE ARE ALREADY IN DAYLIGHT SAVINGS
+
+const unsigned long interval = 600000; // Interval in milliseconds (60 seconds)
+unsigned long previousMillis = 0; 
 
 String HOST_NAME   = "http://industrial.api.ubidots.com"; 
 String PATH_NAME   = "/api/v1.6/devices/My_PC";
@@ -75,6 +77,7 @@ VariableInfo variableData[MAX_VARIABLES]; // Array of VariableInfo objects
 HourMinute prescribedTime[MAX_MEDS];
 Inventory inventory[MAX_MEDS];
 int alarmFlag[MAX_MEDS] = {0};
+int statusFlag = 0; //Status normal
 
 void loop() {
   //analogWrite(PIN_RED,   0);
@@ -88,7 +91,7 @@ void loop() {
 
   if (Serial.available() > 0) {
     for (int i = 0; i < MAX_VARIABLES; i++) {
-      while (Serial.available() < 0) {
+      while (Serial.available() <= 0) {
       }
       String information = Serial.readStringUntil('\n');
 
@@ -114,6 +117,15 @@ void loop() {
       data.value = intValue;
       data.lastValue = intLastValue;
 
+      if (label.startsWith("Error") || label.startsWith("Exception")) {
+        if (statusFlag == 0) {
+          analogWrite(PIN_RGB_GREEN, 255);
+          analogWrite(PIN_2COLOR_GREEN, 255);
+          analogWrite(PIN_2CMINI_GREEN, 255);
+        }
+        return;
+      } 
+
       // Store the VariableInfo object in the array
       variableData[i] = data;
 
@@ -133,26 +145,26 @@ void loop() {
           prescribedTime[(i-MAX_MEDS)/2].hour =  variableData[i].value;
         } else {
           prescribedTime[(i-MAX_MEDS-1)/2].minute =  variableData[i].value;
+          checkAlarm((i-MAX_MEDS-1)/2);
         }
-      }
-
-      if (label.startsWith("Error") || label.startsWith("Exception")) {
-        analogWrite(PIN_RGB_GREEN, 255);
-        analogWrite(PIN_2COLOR_GREEN, 255);
-        analogWrite(PIN_2CMINI_GREEN, 255);
       }
     }
   }
 
-  for (int i = 0; i < MAX_MEDS; i++) {
-    checkInventory(i);
-    checkAlarm(i);
+  unsigned long currentMillis = millis(); // Get the current time
+
+  // Check if the specified interval has passed
+  if (currentMillis - previousMillis >= interval) {
+    // Update the last time the loop ran
+    previousMillis = currentMillis;
+    for (int i = 0; i < MAX_MEDS; i++) {
+      checkInventory(i);
+    }
   }
 }
 
 void buzzer() {
   pinMode(BUZZER_PIN, OUTPUT);
-  
   // Make the buzzer buzz at a frequency of 262 Hz
   tone(BUZZER_PIN, 262);
 }
@@ -172,7 +184,7 @@ void checkAlarm(int i) {
   if (alarmFlag[i] == 0) {
     if (prescribedTime[i].hour == timeinfo.tm_hour && prescribedTime[i].minute == timeinfo.tm_min) {
       if(inventory[i].value == inventory[i].lastValue) {
-        Serial.println("Time to take medicine " + String(i+1));
+        sendHttp("Time to take pill " + String(i+1) + ".");
         alarmFlag[i] = 1;
         buzzer();
         analogWrite(medPresPins[i], 255);  
@@ -206,13 +218,16 @@ int turnOffFiveMinutes(struct HourMinute prescribedTime) {
     Serial.println("Failed to obtain time");
     return -1;
   }
-  if ((prescribedTime.minute >= 55 && timeinfo.tm_min >= (prescribedTime.minute + 5 - 60)) || (timeinfo.tm_min >= (prescribedTime.minute + 5))) {
-    if ((prescribedTime.hour == 23 && timeinfo.tm_hour == 0) || (prescribedTime.hour == timeinfo.tm_hour)) {
+  if (prescribedTime.minute >= 55 && timeinfo.tm_min >= (prescribedTime.minute + 5 - 60)) {
+    if ((prescribedTime.hour == 23 && timeinfo.tm_hour == 0) || (prescribedTime.hour + 1 == timeinfo.tm_hour)) {
       return 1;
     }
+  } else if ((timeinfo.tm_min >= (prescribedTime.minute + 5)) && (prescribedTime.hour == timeinfo.tm_hour)) {
+    return 1;
   }
   return 0;
 }
+
 
 //check if no pills are in the 5 min interval to take pills (buzzer purposes)
 int checkPositiveFlag() {

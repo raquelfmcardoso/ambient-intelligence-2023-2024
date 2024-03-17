@@ -78,12 +78,13 @@ def read_from_serial():
                 print("Received from Arduino:", received_data)
 
 def main():
-    for label in VARIABLE_LABELS:
-        variable_data = get_request(label)
-        if variable_data:
-            print(variable_data)
-            print_to_serial(label, variable_data)
-    time.sleep(60)
+    if datetime.datetime.now().second == 0:
+        for label in VARIABLE_LABELS:
+            variable_data = get_request(label)
+            if variable_data:
+                print(variable_data)
+                print_to_serial(label, variable_data)
+                
 
 if __name__ == '__main__':
     read_thread = threading.Thread(target=read_from_serial)
