@@ -7,9 +7,16 @@
 #include "pitches.h"
 
 #define BUZZER_PIN D4
+#define PIN_RGB_RED    D1
+#define PIN_2COLOR_RED  D2 
+#define PIN_2CMINI_RED   D3
+#define PIN_RGB_GREEN    D5
+#define PIN_2COLOR_GREEN  D6
+#define PIN_2CMINI_GREEN   D7
 
 const int MAX_VARIABLES = 9; // Maximum number of VariableInfo objects
 const int MAX_MEDS = 3; // Maximum number of Meds
+const int medPresPins[3] = {PIN_RGB, PIN_2COLOR, PIN_2CMINI};
 
 const char WIFI_SSID[]     = "Vodafone-F81A50-Plus";
 const char WIFI_PASSWORD[] = "RF4BCz3Dzn";
@@ -128,6 +135,12 @@ void loop() {
           prescribedTime[(i-MAX_MEDS-1)/2].minute =  variableData[i].value;
         }
       }
+
+      if (label.startsWith("Error") || label.startsWith("Exception")) {
+        analogWrite(PIN_RGB_GREEN, 255);
+        analogWrite(PIN_2COLOR_GREEN, 255);
+        analogWrite(PIN_2CMINI_GREEN, 255);
+      }
     }
   }
 
@@ -162,6 +175,7 @@ void checkAlarm(int i) {
         Serial.println("Time to take medicine " + String(i+1));
         alarmFlag[i] = 1;
         buzzer();
+        analogWrite(medPresPins[i], 255);  
       }
     } else if (inventory[i].value < inventory[i].lastValue) {
         sendHttp("The pill " + String(i+1) + " was taken at the incorrect time.");
@@ -172,12 +186,14 @@ void checkAlarm(int i) {
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
+        analogWrite(medPresPins[i], 0);
       }
     } else if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
       sendHttp("Already passed 5 minutes since the time to take the pill " + String(i+1) + ".");
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
+        analogWrite(medPresPins[i], 0);
       }
     }
   }
