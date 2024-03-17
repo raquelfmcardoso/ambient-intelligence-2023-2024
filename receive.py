@@ -11,16 +11,16 @@ VARIABLE_LABEL_2 = "medication 2"
 VARIABLE_LABEL_3 = "medication 3"
 
 # Open serial connection to Arduino
-ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
+ser = serial.Serial('COM6', 115200)  # Replace 'COM6' with the appropriate COM port
 print("Reading data from serial port.....");
 time.sleep(2)
 ser.reset_input_buffer() # Delete any stale data.
 
 def build_payload(variable_1, variable_2, variable_3, data):
     # Creates six random values for sending data
-    value_1 = int(data[5])
-    value_2 = int(data[6])
-    value_3 = int(data[7])
+    value_1 = int(data[0])
+    value_2 = int(data[1])
+    value_3 = int(data[2])
 
     payload = {variable_1: value_1, variable_2: value_2, variable_3: value_3}
 
@@ -66,7 +66,7 @@ def main():
         
         #send collected data to cloud as a payload
         payload = build_payload(VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, tmp)
-        print(tmp[5],tmp[6],tmp[7])
+        print(tmp[0],tmp[1],tmp[2])
         del tmp #clear received data
 
         print("Data transfer started")
