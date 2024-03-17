@@ -1,21 +1,18 @@
-//#define PIN_RED    D11 // The Arduino Nano ESP32 pin connected to R pin
-//#define PIN_GREEN  D10 // The Arduino Nano ESP32 pin connected to G pin
-//#define PIN_BLUE   D9  // The Arduino Nano ESP32 pin connected to B pin
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include "time.h"
 
-#define BUZZER_PIN D4
-#define PIN_RGB_RED    D1
-#define PIN_2COLOR_RED  D2 
-#define PIN_2CMINI_RED   D3
+#define BUZZER_PIN D12
+#define PIN_RGB_RED    D2
+#define PIN_2COLOR_RED  D3 
+#define PIN_2CMINI_RED   D4     
 #define PIN_RGB_GREEN    D5
-#define PIN_2COLOR_GREEN  D6
-#define PIN_2CMINI_GREEN   D7
+#define PIN_2COLOR_GREEN  D6 
+#define PIN_2CMINI_GREEN   D7                                                                                                 
 
 const int MAX_VARIABLES = 9; // Maximum number of VariableInfo objects
 const int MAX_MEDS = 3; // Maximum number of Meds
-const int medPresPins[3] = {PIN_RGB, PIN_2COLOR, PIN_2CMINI};
+const int medPresPins[3] = {PIN_RGB_GREEN, PIN_2COLOR_GREEN, PIN_2CMINI_GREEN};
 
 const char WIFI_SSID[]     = "Vodafone-F81A50-Plus";
 const char WIFI_PASSWORD[] = "RF4BCz3Dzn";
@@ -30,31 +27,6 @@ unsigned long previousMillis = 0;
 String HOST_NAME   = "http://industrial.api.ubidots.com"; 
 String PATH_NAME   = "/api/v1.6/devices/My_PC";
 String TOKEN       = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI";
-
-void setup() {
-  Serial.begin(115200); // Make sure to set the baud rate to match your Python script
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.println("Connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.print("Connected to WiFi network with IP Address: ");
-  Serial.println(WiFi.localIP());
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time");
-    return;
-  }
-  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_OFF);
-  //pinMode(PIN_RED,   OUTPUT);
-  //pinMode(PIN_GREEN, OUTPUT);
-  //pinMode(PIN_BLUE,  OUTPUT);
-}
 
 struct VariableInfo {
   String label;
@@ -76,18 +48,42 @@ struct Inventory {
 VariableInfo variableData[MAX_VARIABLES]; // Array of VariableInfo objects
 HourMinute prescribedTime[MAX_MEDS];
 Inventory inventory[MAX_MEDS];
-int alarmFlag[MAX_MEDS] = {0};
+int alarmFlag[MAX_MEDS] = {0}; //Normal status = 0, Alarm ring = 1
 int statusFlag = 0; //Status normal
+String startDownTime;
+String endDownTime;
+String message;
 
-void loop() {
-  //analogWrite(PIN_RED,   0);
-  //analogWrite(PIN_GREEN, 201);
-  //analogWrite(PIN_BLUE,  204);
+void setup() {
+  
+  Serial.begin(115200); // Make sure to set the baud rate to match your Python script
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.println("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     Serial.println("Failed to obtain time");
     return;
   }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+}
+
+void loop() {
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  message = "";
 
   if (Serial.available() > 0) {
     for (int i = 0; i < MAX_VARIABLES; i++) {
@@ -119,12 +115,34 @@ void loop() {
 
       if (label.startsWith("Error") || label.startsWith("Exception")) {
         if (statusFlag == 0) {
-          analogWrite(PIN_RGB_GREEN, 255);
-          analogWrite(PIN_2COLOR_GREEN, 255);
-          analogWrite(PIN_2CMINI_GREEN, 255);
+          struct tm timeinfo;
+          if(!getLocalTime(&timeinfo)){
+              Serial.println("Failed to obtain time");
+          return;
+          }
+          startDownTime = createDateString(timeinfo);
+          analogWrite(PIN_RGB_RED, 255);
+          analogWrite(PIN_2COLOR_RED, 255);
+          analogWrite(PIN_2CMINI_RED, 255);
+          statusFlag = 1;
         }
         return;
-      } 
+      } else {
+        if (statusFlag == 1) {
+          struct tm timeinfo;
+          if(!getLocalTime(&timeinfo)){
+              Serial.println("Failed to obtain time");
+          return;
+          }
+          endDownTime = createDateString(timeinfo);
+
+          sendHttp("UPDATE: Cloud is back. It was down from " + startDownTime + " until " + endDownTime + ". You may receive some unexpected alerts.");
+          statusFlag = 0;
+          analogWrite(PIN_RGB_RED, 0);
+          analogWrite(PIN_2COLOR_RED, 0);
+          analogWrite(PIN_2CMINI_RED, 0);
+        }
+      }
 
       // Store the VariableInfo object in the array
       variableData[i] = data;
@@ -149,6 +167,9 @@ void loop() {
         }
       }
     }
+    if (!message.equals("")) {
+      sendHttp(message);
+    }
   }
 
   unsigned long currentMillis = millis(); // Get the current time
@@ -163,6 +184,31 @@ void loop() {
   }
 }
 
+String sendMessage(String msg) {
+  message += (msg + " ");
+  return message;
+} 
+
+String createDateString(struct tm timeinfo) {
+  char weekDay[10];
+  strftime(weekDay,10, "%A", &timeinfo);
+  char month[10];
+  strftime(month, 10, "%B", &timeinfo);
+  char year[5];
+  strftime(year,5, "%Y", &timeinfo);
+  char day[3];
+  strftime(day, 3, "%d", &timeinfo);
+  char hour[3];
+  strftime(hour,3, "%H", &timeinfo);
+  char min[3];
+  strftime(min,3, "%M", &timeinfo);
+  char sec[3];
+  strftime(sec,3, "%S", &timeinfo);
+
+  String date = String(weekDay) + ", " + String(month) + " " + String(day) + " " + String(year) + " " + String(hour) + ":" + String(min) + ":" + String(sec);
+  return date;
+}
+
 void buzzer() {
   pinMode(BUZZER_PIN, OUTPUT);
   // Make the buzzer buzz at a frequency of 262 Hz
@@ -170,7 +216,7 @@ void buzzer() {
 }
 
 void checkInventory(int i) {
-  if (inventory[i].value == 1) {
+  if (inventory[i].value <= 1) {
     sendHttp("URGENT: Please restock pill " + String(i+1) + ", it has only " + String(inventory[i].value) + " pill.");
   }
 }
@@ -184,29 +230,29 @@ void checkAlarm(int i) {
   if (alarmFlag[i] == 0) {
     if (prescribedTime[i].hour == timeinfo.tm_hour && prescribedTime[i].minute == timeinfo.tm_min) {
       if(inventory[i].value == inventory[i].lastValue) {
-        sendHttp("Time to take pill " + String(i+1) + ".");
+        message = sendMessage("Time to take pill " + String(i+1) + ".");
         alarmFlag[i] = 1;
         buzzer();
         analogWrite(medPresPins[i], 255);  
       }
     } else if (inventory[i].value < inventory[i].lastValue) {
-        sendHttp("The pill " + String(i+1) + " was taken at the incorrect time.");
+        message = sendMessage("The pill " + String(i+1) + " was taken at the incorrect time.");
       }
   } else if (alarmFlag[i] == 1) {
     if (inventory[i].value < inventory[i].lastValue) {
-      sendHttp("The pill " + String(i+1) + " was taken at the correct time.");
+      message = sendMessage("The pill " + String(i+1) + " was taken at the correct time.");
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
-        analogWrite(medPresPins[i], 0);
       }
+      analogWrite(medPresPins[i], 0);
     } else if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
-      sendHttp("Already passed 5 minutes since the time to take the pill " + String(i+1) + ".");
+      message = sendMessage("Already passed 5 minutes since the time to take the pill " + String(i+1) + ".");
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
-        analogWrite(medPresPins[i], 0);
       }
+      analogWrite(medPresPins[i], 0);
     }
   }
 }
