@@ -169,9 +169,6 @@ void loop() {
         }
       }
     }
-    if (!message.equals("")) {
-      sendHttp(message);
-    }
   }
 
   unsigned long currentMillis = millis(); // Get the current time
@@ -183,6 +180,9 @@ void loop() {
     for (int i = 0; i < MAX_MEDS; i++) {
       checkInventory(i);
     }
+  }
+  if (!message.equals("")) {
+    sendHttp(message);
   }
 }
 
@@ -219,7 +219,7 @@ void buzzer() {
 
 void checkInventory(int i) {
   if (inventory[i].value <= 1) {
-    sendHttp("URGENT: Please restock pill " + String(i+1) + ", it has only " + String(inventory[i].value) + " pill.");
+    sendMessage("Please restock pill " + String(i+1) + ", it only has " + String(inventory[i].value) + ".");
   }
 }
 
