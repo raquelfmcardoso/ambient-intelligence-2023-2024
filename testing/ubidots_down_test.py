@@ -5,7 +5,7 @@ import serial
 import threading
 
 TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
-DEVICE_LABEL = "my_pc"
+DEVICE_LABEL = "smart_pill_organizer"
 VARIABLE_LABELS = [
     "medication-1",
     "medication-2",
@@ -18,8 +18,8 @@ VARIABLE_LABELS = [
     "medication3-minute"
 ]
 
-ser = serial.Serial('COM4', 115200)  # Replace 'COM5' with the appropriate COM port
-ser_lock = threading.Lock()  # Lock for serial access
+ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
+ser_lock = threading.Lock()
 
 def get_request(label):
     variable_data = {}
@@ -35,8 +35,6 @@ def print_to_serial(label, message):
     with ser_lock:
         ser.write(msg.encode())
         print(msg)
-        #time.sleep(2)
-    #print(message.strip())
 
 def read_from_serial():
     while True:

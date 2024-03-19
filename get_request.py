@@ -5,7 +5,7 @@ import serial
 import threading
 
 TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
-DEVICE_LABEL = "my_pc"
+DEVICE_LABEL = "smart_pill_organizer"
 VARIABLE_LABELS = [
     "medication-1",
     "medication-2",
@@ -18,8 +18,8 @@ VARIABLE_LABELS = [
     "medication3-minute"
 ]
 
-ser = serial.Serial('COM4', 115200)  # Replace 'COM5' with the appropriate COM port
-ser_lock = threading.Lock()  # Lock for serial access
+ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
+ser_lock = threading.Lock()
 
 def get_request(label):
     variable_data = {}
@@ -32,7 +32,6 @@ def get_request(label):
         if response.status_code == 200:
             response_json = response.json()
             results = response_json.get('results', [])
-            #print(response_json)
             if len(results) >= 1:
                 timestamp = timestamp_conversion(results[0]['timestamp'])
                 variable_data['timestamp'] = timestamp
@@ -43,23 +42,23 @@ def get_request(label):
                     variable_data['last_value'] = results[1]['value']
             return variable_data
         else:
-            print(f"Error: Unable to fetch data for variable {label}")
+            message = f"Error: Unable to fetch data for variable {label}."
+            with ser_lock:
+                ser.write(message.encode())
+                print(message)
             return None
     except Exception as e:
-        print("Exception:", e)
+        exception = f"Error: {e}"
+        with ser_lock:
+            ser.write(exception.encode())
+            print(exception)
         return None
 
 def timestamp_conversion(time):
-    # Unix timestamp (example)
-    timestamp = time / 1000  # Assuming the timestamp is in milliseconds, so dividing by 1000 to convert to seconds
-
-    # Convert Unix timestamp to datetime object
+    timestamp = time / 1000
     dt_object = datetime.datetime.fromtimestamp(timestamp)
-
-    # Extract date and hour
-    date = dt_object.strftime('%d-%m-%Y')  # Format: YYYY-MM-DD
-    hour = dt_object.strftime('%H:%M')  # Format: HH:MM:SS
-    
+    date = dt_object.strftime('%d-%m-%Y')  # Format: DD-MM-YYYY
+    hour = dt_object.strftime('%H:%M')  # Format: HH:MM
     return (date, hour)
 
 def print_to_serial(label, variable_data):
@@ -67,8 +66,6 @@ def print_to_serial(label, variable_data):
     with ser_lock:
         ser.write(message.encode())
         print(message)
-        #time.sleep(2)
-    #print(message.strip())
 
 def read_from_serial():
     while True:

@@ -25,7 +25,7 @@ const unsigned long interval = 600000; // Interval in milliseconds (60 seconds)
 unsigned long previousMillis = 0; 
 
 String HOST_NAME   = "http://industrial.api.ubidots.com"; 
-String PATH_NAME   = "/api/v1.6/devices/My_PC";
+String PATH_NAME   = "/api/v1.6/devices/smart_pill_organizer";
 String TOKEN       = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI";
 
 struct VariableInfo {
