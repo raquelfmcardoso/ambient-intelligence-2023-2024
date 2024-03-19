@@ -57,15 +57,14 @@ void loop()
   }
   
   Serial.println("");
-  delay(60000);
+  delay(20000);
 }
 
 float countPills(float width, float height) {
   float area = width * height;
-  int standard_area = 250;
-  double totalPills = floor(area/standard_area);
-  Serial.println("countPills 1: " + String(totalPills));
+  int standard_area = 289;
+  //Serial.println("area: " + String(area));
+  int totalPills = floor(area/standard_area);
   if (totalPills < 1) { totalPills = 1; }
-  Serial.println("countPills: " + String(totalPills));
   return totalPills;
 }
