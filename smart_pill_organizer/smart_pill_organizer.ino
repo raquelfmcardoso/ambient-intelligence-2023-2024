@@ -3,25 +3,24 @@
 #include "time.h"
 
 #define BUZZER_PIN D12
-#define PIN_RGB_RED    D2
-#define PIN_2COLOR_RED  D3 
-#define PIN_2CMINI_RED   D4     
-#define PIN_RGB_GREEN    D5
-#define PIN_2COLOR_GREEN  D6 
-#define PIN_2CMINI_GREEN   D7                                                                                                 
+#define PIN_RED D2
+#define PIN_GREEN_1 D3 
+#define PIN_GREEN_2 D4     
+#define PIN_GREEN_3 D5
+                                                                                                
 
 const int MAX_VARIABLES = 9; // Maximum number of VariableInfo objects
-const int MAX_MEDS = 3; // Maximum number of Meds
-const int medPresPins[3] = {PIN_RGB_GREEN, PIN_2COLOR_GREEN, PIN_2CMINI_GREEN};
+const int MAX_PILLS = 3; // Maximum number of pills
+const int medPresPins[3] = {PIN_GREEN_1, PIN_GREEN_2, PIN_GREEN_3};
 
-const char WIFI_SSID[]     = "Vodafone-F81A50-Plus";
-const char WIFI_PASSWORD[] = "RF4BCz3Dzn";
+const char WIFI_SSID[]     = "Vodafone-F81A50-Plus"; //change the ssid according to your wifi
+const char WIFI_PASSWORD[] = "RF4BCz3Dzn"; //your wifi password
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;
-const int   daylightOffset_sec = 0; //DAYLIGHT SAVINGS ARE A MESS, SOMEHOW THE FUCTION CONSIDERS THAT WE ARE ALREADY IN DAYLIGHT SAVINGS
+const int   daylightOffset_sec = 0; //The function already considers GMT+0 in daylight savings
 
-const unsigned long interval = 600000; // Interval in milliseconds (60 seconds)
+const unsigned long interval = 600000; // (10 minutes) Interval in milliseconds of the time to send an email in case of low pill count
 unsigned long previousMillis = 0; 
 
 String HOST_NAME   = "http://industrial.api.ubidots.com"; 
@@ -46,10 +45,10 @@ struct Inventory {
 };
 
 VariableInfo variableData[MAX_VARIABLES]; // Array of VariableInfo objects
-HourMinute prescribedTime[MAX_MEDS];
-Inventory inventory[MAX_MEDS];
+HourMinute prescribedTime[MAX_PILLS];
+Inventory inventory[MAX_PILLS];
 
-int alarmFlag[MAX_MEDS] = {0}; //Normal status = 0, Alarm ring = 1
+int alarmFlag[MAX_PILLS] = {0}; //Normal status = 0, Alarm ring = 1
 int statusFlag = 0; //Status normal
 
 String startDownTime;
@@ -123,9 +122,7 @@ void loop() {
           return;
           }
           startDownTime = createDateString(timeinfo);
-          analogWrite(PIN_RGB_RED, 255);
-          analogWrite(PIN_2COLOR_RED, 255);
-          analogWrite(PIN_2CMINI_RED, 255);
+          analogWrite(PIN_RED, 255);
           statusFlag = 1;
         }
         return;
@@ -140,9 +137,7 @@ void loop() {
 
           sendHttp("UPDATE: Cloud is back. It was down from " + startDownTime + " to " + endDownTime + ". You may receive some unexpected alerts.");
           statusFlag = 0;
-          analogWrite(PIN_RGB_RED, 0);
-          analogWrite(PIN_2COLOR_RED, 0);
-          analogWrite(PIN_2CMINI_RED, 0);
+          analogWrite(PIN_RED, 0);
         }
       }
 
@@ -157,15 +152,15 @@ void loop() {
       Serial.println("Received Last Value: " + String(variableData[i].lastValue));
       Serial.println(&timeinfo, "Received Time: %H:%M:%S");
 
-      if (i < MAX_MEDS) {
+      if (i < MAX_PILLS) {
         inventory[i].value = variableData[i].value;
         inventory[i].lastValue = variableData[i].lastValue;
       } else {
-        if ((i - MAX_MEDS) % 2 == 0) {
-          prescribedTime[(i-MAX_MEDS)/2].hour =  variableData[i].value;
+        if ((i - MAX_PILLS) % 2 == 0) {
+          prescribedTime[(i-MAX_PILLS)/2].hour =  variableData[i].value;
         } else {
-          prescribedTime[(i-MAX_MEDS-1)/2].minute =  variableData[i].value;
-          checkAlarm((i-MAX_MEDS-1)/2);
+          prescribedTime[(i-MAX_PILLS-1)/2].minute =  variableData[i].value;
+          checkAlarm((i-MAX_PILLS-1)/2);
         }
       }
     }
@@ -177,7 +172,7 @@ void loop() {
   if (currentMillis - previousMillis >= interval) {
     // Update the last time the loop ran
     previousMillis = currentMillis;
-    for (int i = 0; i < MAX_MEDS; i++) {
+    for (int i = 0; i < MAX_PILLS; i++) {
       checkInventory(i);
     }
   }
@@ -249,7 +244,7 @@ void checkAlarm(int i) {
       }
       analogWrite(medPresPins[i], 0);
     } else if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
-      message = sendMessage("Already passed 5 minutes since the time to take the pill " + String(i+1) + ".");
+      message = sendMessage("5 minutes have passed since the time to take the pill " + String(i+1) + ".");
       alarmFlag[i] = 0;
       if (checkPositiveFlag() == 0) {
         stopBuzzer();
@@ -279,7 +274,7 @@ int turnOffFiveMinutes(struct HourMinute prescribedTime) {
 
 //check if no pills are in the 5 min interval to take pills (buzzer purposes)
 int checkPositiveFlag() {
-  for(int j = 0; j < MAX_MEDS; j++) {
+  for(int j = 0; j < MAX_PILLS; j++) {
     if (alarmFlag[j] == 1) {
       return 1;
     }
