@@ -42,8 +42,12 @@ void loop()
   
   // place blocks in the corresponding signature entry
   for (i=0; i<pixy.ccc.numBlocks; i++) {
-      int sig = pixy.ccc.blocks[i].m_signature;
-      sigCounts[sig]++;
+    float width = pixy.ccc.blocks[i].m_width;
+    float height = pixy.ccc.blocks[i].m_height;
+    int sig = pixy.ccc.blocks[i].m_signature;
+    int totalPills = countPills(width, height);
+    sigCounts[sig] += int(totalPills);
+    if (sigCounts[sig] > 4) sigCounts[sig] = 4;
   }
 
   // Print the counts for each signature
@@ -54,4 +58,14 @@ void loop()
   
   Serial.println("");
   delay(60000);
+}
+
+float countPills(float width, float height) {
+  float area = width * height;
+  int standard_area = 250;
+  double totalPills = floor(area/standard_area);
+  Serial.println("countPills 1: " + String(totalPills));
+  if (totalPills < 1) { totalPills = 1; }
+  Serial.println("countPills: " + String(totalPills));
+  return totalPills;
 }
