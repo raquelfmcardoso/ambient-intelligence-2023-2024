@@ -63,9 +63,9 @@ Description:
 The end result should look similar to this:
 
 <p float="left">
-    <img src="images/Pixy2_Setup_FrontPerspective.jpg" width="33%" height="300" />
-    <img src="images/Pixy2_Setup_SidePerspective.jpg" width="33%" height="300" /> 
-    <img src="images/Pixy2_Setup_UpPerspective.jpg" width="33%" height="300" />
+    <img src="images/Pixy2_Setup_FrontPerspective.jpg" width="32%" height="300" />
+    <img src="images/Pixy2_Setup_SidePerspective.jpg" width="32%" height="300" /> 
+    <img src="images/Pixy2_Setup_UpPerspective.jpg" width="32%" height="300" />
     <figcaption>Images 2-4 - Front, Side and Upward Perspective of the Pixy2 and Arduino Uno Assembly  </figcaption>
 </p>  
 
@@ -204,9 +204,9 @@ Our solution implements several features to enhance medication adherence. The fo
 - Even if the pills are too close to each other or some are in the wrong compartments, our system is able to correctly detect them.
 
 <p float="left">
-    <img src="images/medication_detection_example.png" width="33%" height="300" />
-    <img src="images/medication_detection_example2.png" width="33%" height="300" /> 
-    <img src="images/medication_detection_example3.png" width="33%" height="300" />
+    <img src="images/medication_detection_example.png" width="32%" height="300" />
+    <img src="images/medication_detection_example2.png" width="32%" height="300" /> 
+    <img src="images/medication_detection_example3.png" width="32%" height="300" />
     <figcaption>Images 8-10 - Possible configurations of the medication detection system.</figcaption>
 </p>
 <br/><br/>
