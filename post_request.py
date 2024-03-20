@@ -4,7 +4,7 @@ import requests
 import math
 import random
 
-TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
+TOKEN = "BBUS-6r8wUc13PXf3brHoIIKQbZzlk5BEP5"
 DEVICE_LABEL = "smart_pill_organizer"
 VARIABLE_LABEL_1 = "medication 1"
 VARIABLE_LABEL_2 = "medication 2"

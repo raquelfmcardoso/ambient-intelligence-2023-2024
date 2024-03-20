@@ -14,11 +14,12 @@ pip install requests
 
 ### Arduino Uno
 
-* download the library for the Pixy2 camera [here](https://github.com/charmedlabs/pixy2/raw/master/releases/arduino/arduino_pixy2-1.0.3.zip) and in Arduino IDE install it by going to Sketch ➜ Include Library ➜ Add .ZIP Library… and choosing the downloaded file
+* download the library for the Pixy2 camera [here](https://github.com/charmedlabs/pixy2/raw/master/releases/arduino/arduino_pixy2-1.0.3.zip) and in Arduino IDE install it by going to Sketch ➜ Include Library ➜ Add .ZIP Library… and choosing the downloaded file.
 
 ### Arduino Nano ESP32
 
-* download the library for the ...
+* install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
+* download the library HttpClient by going to Sketch ➜ Include Library ➜ Manage Libraries... and once in the Library Manager, search for HttpClient by Adrian McEwen.
 
 ## Prerequisites
 

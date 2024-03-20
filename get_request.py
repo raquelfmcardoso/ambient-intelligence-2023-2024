@@ -4,7 +4,7 @@ import datetime
 import serial
 import threading
 
-TOKEN = "BBUS-zjuPmVgxisCTzVOcQ1wUjwNDxaPcsI"
+TOKEN = "BBUS-6r8wUc13PXf3brHoIIKQbZzlk5BEP5"
 DEVICE_LABEL = "smart_pill_organizer"
 VARIABLE_LABELS = [
     "medication-1",
