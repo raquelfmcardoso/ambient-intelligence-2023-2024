@@ -12,8 +12,8 @@ String HOST_NAME   = "http://industrial.api.ubidots.com";
 String PATH_NAME   = "/api/v1.6/devices/smart_pill_organizer";
 String TOKEN       = "BBUS-6r8wUc13PXf3brHoIIKQbZzlk5BEP5";
 
-const char WIFI_SSID[]     = "Vodafone-F81A50-Plus"; // Replace the SSID with your own
-const char WIFI_PASSWORD[] = "RF4BCz3Dzn"; // Replace the password with your own
+const char WIFI_SSID[]     = "InsertYourWifiSSID"; // Replace the SSID with your own
+const char WIFI_PASSWORD[] = "InsertYourWifiPassword"; // Replace the password with your own
 
 const char* ntpServer = "pool.ntp.org"; // Define the NTP server address
 const long gmtOffset_sec = 0; // Define the GMT offset in seconds. This is the time difference between your local time and GMT time

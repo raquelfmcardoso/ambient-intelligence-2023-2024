@@ -9,8 +9,6 @@ This struggle with medication adherence can lead to detrimental consequences, in
 
 ## Built With
 
-### Hardware C
-
 Include an outline of the technologies in the project, such as hardware components (Arduino/Raspberry Pi), operating systems, programming language, database, libraries.
 
 Include links to any related projects (for example, whether this API has corresponding iOS or Android clients), links to online tools related to the application (such as the project web site, the shared file storage).
@@ -49,6 +47,21 @@ These instructions will get you a copy of the project up and running on for test
 Describe step-by-step assembly instructions.
 
 When necessary, and especially when wiring is involved, include diagrams/photos.
+
+Step 1. Arduino Nano ESP32 Assembly
+
+Connect the components to the breadboard as shown in the following diagram:
+![alt text](ArduinoNanoESP32_Assembly.png)
+
+Description: 
+1. Connect each Green LED to pins D3, D4, and D5 on the Arduino board using a 220-ohm resistor for each.  Attach one end of the resistor to the corresponding pin (D3, D4, or D5) using a wire and the other end to the positive (anode) leg of the LED using a jump wire. Connect the negative (cathode) leg of the LED to ground (GND) on the Arduino board using a jump wire.
+2. Connect the RGB LED module to pin D2. Connect the pin labeled "R" on the LED to the pin D2 using a jump wire. Connect the Common (Cathode-) pin to ground (GND) on the Arduino board using a jump wire.
+3. Connect the Piezzo Buzzer to pin D12. Connect the positive (anode) leg of the buzzer to the pin D12 using a jump wire and connect the negative (cathode) leg of the buzzer to the ground (GND) on the Arduino board using a jump wire.
+4. Connect the Arduino using a USB-C cable to the computer to supply its' power.
+
+Step 2. Arduino Uno Assembly 
+1. Connect the Pixy2 to the the Arduino Uno using a Pixy IO to Arduino ISP Cable.
+2. Connect both of them using a USB Cable to the computer to supply its' power.
 
 ### Software Prerequisites
 
