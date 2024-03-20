@@ -115,6 +115,54 @@ You can also add screenshots to show expected results, when relevant.
 
 ### Testing
 
+Before starting, make sure all steps from the installation phase were done.
+Add a email to get notifications of the pillbox by accessing to zapier through this [guide](#zapier)
+Start by signing into the Ubidots STEM account by following this [guide](#deployment).
+
+####  Testing 1: Taking pills at the correct time
+1. Go to Data ➜ Dashboards and check if the number of pills shown are correct.
+2. Scroll down to Insert Prescription Schedules and insert the time to be tested in the Medication of your choice, for example 1 minute after the current time.
+3. At the scheduled time, the buzzer will buzz and the corresponding LED of the medication chosen will light up green.
+4. Check the email added to the receivers list in Zapier, there should be an received email with the following content: "Time to take a pill of medication #MedicationChosen".
+5. In the pillbox, take out 1 pill of the medication chosen.
+6. After one minute, the buzzer stops and the corresponding LED will be turned off.
+7. Another email will be sent with the following content: "A pill of medication #MedicationChosen was taken at the correct time".
+
+####  Testing 2: Taking pills at the incorrect time
+1. In the pillbox, take out 1 pill of the medication chosen.
+2. Check the email, there will be an email with the following content: "A pill of medication #MedicationChosen was taken at the incorrect time".
+
+####  Testing 3: Not taking pills after 5 minutes of the scheduled time
+1. Go back Data ➜ Dashboards.
+2. Scroll down to Insert Prescription Schedules and insert the time to be tested in the Medication of your choice, for example 1 minute after the current time.
+3. At the scheduled time, the buzzer will buzz and the corresponding LED of the medication chosen will light up green.
+4. Check the email added to the receivers list in Zapier, there should be an received email with the following text: "Time to take a pill of medication #MedicationChosen".
+5. Wait and after 5 minutes, the buzzer stops and the corresponding LED is turned off.
+6. An email will be received with the following content: "Already passed 5 minutes since the scheduled time to consume medication #MedicationChosen - missed dosage".
+
+####  Testing 4: Low inventory
+1. In the pillbox, chose one of the medicines and take out the pills until there is left 1 or 0.
+2. An email will be received with the content: "Please restock inventory of medication #MedicationChosen immediately, it only has #NumberOfPillsLeft pill.".
+3. Until the medication is restocked, the same email will be sent every 10 minutes.
+
+#### Testing 5: Simulate Ubidots being down (Error version)
+1. Stop running the command ```python get_request.py```.
+2. Run the command ```python testing/ubidots_error_test.py```.
+3. The RGB LED will light up red until the command ```python get_request.py```is ran again.
+4. Run the command ```python get_request.py``` and an email will be received with the following content: UPDATE: Cloud is back. It was down from #StartDowntimeDate to #EndDowntimeDate. You may receive some unexpected alerts.
+
+
+#### Testing 6: Simulate Ubidots being down (Exception version)
+1. Stop running the command ```python get_request.py```.
+2. Run the command ```python testing/ubidots_exception_test.py```.
+3. The RGB LED will light up red until the command ```python get_request.py```is ran again.
+4. Run the command ```python get_request.py``` and an email will be received with the following content: UPDATE: Cloud is back. It was down from #StartDowntimeDate to #EndDowntimeDate. You may receive some unexpected alerts.
+
+To check the content of the notifications before they are sent to the email go to Devices ➜ Devices ➜ smart_pill_organizer ➜ event.
+
+The tests #1-4 are done to test the functionality of the system. The tests #5-6 are used to simulate cases in which Ubidots could be down.
+
+
 Explain how to run the tests for this system.
 
 Give users explicit instructions on how to run all necessary tests. 

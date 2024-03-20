@@ -29,6 +29,7 @@ unsigned long previousMillis = 0;
 
 int pillEventFlag[MAX_PILLS] = {0}; // Normal status = 0, event triggered = 1
 int statusFlag = 0; // Normal status = 0, Ubidots down = 1
+int inventoryAlertFlag[MAX_PILLS] = {0}; //Normal status = 0, less or equal to 1 pill = 1
 
 String message; // Variable to store the message to be sent in the email
 
@@ -178,6 +179,7 @@ void loop() {
       if (i < MAX_PILLS) {
         inventory[i].value = variableData[i].value;
         inventory[i].lastValue = variableData[i].lastValue;
+        checkInventory(i);
       } else {
         if ((i - MAX_PILLS) % 2 == 0) {
           prescribedTime[(i-MAX_PILLS)/2].hour =  variableData[i].value;
@@ -188,16 +190,7 @@ void loop() {
       }
     }
   }
-
-  // Get the current time in milliseconds since the Arduino board began running
-  unsigned long currentMillis = millis(); 
-  // Check if the specified interval has passed to check the inventory status of the pill
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-    for (int i = 0; i < MAX_PILLS; i++) {
-      checkInventory(i);
-    }
-  }
+  
   // Check for messages to be send
   if (!message.equals("")) {
     sendHttp(message);
@@ -207,7 +200,19 @@ void loop() {
 // Check if the inventory is low (less than or equal to 1 pill)
 void checkInventory(int i) {
   if (inventory[i].value <= 1) {
-    sendMessage("Please restock pill " + String(i+1) + ", it only has " + String(inventory[i].value) + ".");
+    // Get the current time in milliseconds since the Arduino board began running
+    unsigned long currentMillis = millis();
+    if (inventoryAlertFlag[i] == 0) {
+      previousMillis = interval + currentMillis;
+      inventoryAlertFlag[i] = 1;
+    }
+    // Check if the specified interval has passed to check the inventory status of the pill 
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+      sendMessage("Please restock pill " + String(i+1) + ", it only has " + String(inventory[i].value) + ".");
+    }
+  } else {
+    inventoryAlertFlag[i] = 0;
   }
 }
 
