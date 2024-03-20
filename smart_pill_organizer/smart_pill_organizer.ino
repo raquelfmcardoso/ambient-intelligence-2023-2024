@@ -24,7 +24,7 @@ const int MAX_PILLS = 3; // Maximum number of pills
 const int PILL_PINS[3] = {PIN_GREEN_1, PIN_GREEN_2, PIN_GREEN_3}; // The pins used to represent the pills
 const int FREQUENCY = 262; // Buzzer frequency (262Hz)
 
-const unsigned long interval = 600000; // Interval in milliseconds of the time to send an email in case of low pill count (10 minutes)
+const unsigned long interval = 520000; // Interval in milliseconds of the time to send an email in case of low pill count (9 minutes + 1 min in the code)
 unsigned long previousMillis = 0;
 
 int pillEventFlag[MAX_PILLS] = {0}; // Normal status = 0, event triggered = 1
