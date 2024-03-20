@@ -1,4 +1,141 @@
-# Ambient Intelligence Project 2023-2024
+# Smart Pill Organizer
+
+Our solution aims to alleviate the struggle of medication adherence by uniting a traditional pillbox with sensors and actuators. The smart pill organizer is able to detect the medication that is being taken and send the information to a cloud service. This information is then used to send reminders to the user and to keep track of the medication inventory.
+
+## General Information
+
+The major benefits of our solution are the automation of the medication intake process, the ability to keep track of the medication inventory and the possibility of sending reminders to the user. This is a problem felt by many individuals all over the globe that often encounter challenges in adhering to their prescribed medication schedules, due to factors such as age, stress, memory loss, etc.
+This struggle with medication adherence can lead to detrimental consequences, including ineffective treatments, deteriorating health conditions, and, in severe cases, death.
+
+## Built With
+
+### Hardware C
+
+Include an outline of the technologies in the project, such as hardware components (Arduino/Raspberry Pi), operating systems, programming language, database, libraries.
+
+Include links to any related projects (for example, whether this API has corresponding iOS or Android clients), links to online tools related to the application (such as the project web site, the shared file storage).
+If you mention something, please provide links.
+
+### Hardware
+
+* [Arduino Uno](https://store.arduino.cc/products/arduino-uno-rev3) - 1 unit - Development board for interacting with the Pixy2 Camera and to send data to the Ubidots STEM Cloud
+* [Arduino Nano ESP32 with headers](https://store.arduino.cc/products/nano-esp32-with-headers) - 1 unit - Development board for interacting with Ubidots STEM Cloud and to interact with the Piezo Buzzer, LEDs and RGB Module
+* [Pixy2 Camera](https://pixycam.com/pixy2/) - 1 unit - Vision sensor that can detect and track objects based on their color, used to detect the flunctuation of medication inventory.
+* [Green LED Alert](https://www.exploringarduino.com/parts/green-led/) - 3 units - green light-emitting diode (LED) connected to the Arduino Nano ESP32 development board used to provide visual feedback to the user when it's time to take their medication.
+* [RGB Module](https://arduinomodules.info/ky-016-rgb-full-color-led-module/) - 1 unit - Electronic component connected to the Arduino Nano ESP32 development board, used to provide visual feedback to the user when the Cloud Platform is offline.
+* [Piezzo Buzzer](https://www.adafruit.com/product/160) - 1 unit - Electronic component connected to the Arduino Nano ESP32 development board, used to provide auditory feedback to the user when it's time to take their medication.
+* [Resistors](https://en.wikipedia.org/wiki/List_of_electronic_color_code_mnemonics) - 3 units - Electronic components used to limit the flow of electric current to the LED Alerts.
+* [USB Cable](https://store.arduino.cc/products/usb-2-0-cable-type-a-b) - 1 unit - Connects the Arduino Uno development board to the computer that supplies its' power.
+* [USB Cable](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:powering_pixy#usb-cableconnector) - 1 unit - Connects the Pixy2 Camera to the computer that supplies its' power.
+* [USB-C Cable](https://store.arduino.cc/products/usb-cable2in1-type-c) - 1 unit - Connects the Arduino Nano ESP32 development board to the computer that supplies its' power.
+* [Pixy IO to Arduino ISP Cable](https://cdn.sparkfun.com/r/345-345/assets/parts/1/2/8/8/0/14678-Pixy2_CMUcam5-05.jpg) - 1 unit - Connects the Pixy2 camera to the Arduino Uno development board so they can communicate.
+
+### Software
+
+* [Arduino Programming Language](https://www.raspberrypi.com/software/) - Programming Language
+* [Python](https://openjdk.java.net/) - Programming Language
+* [PixyMon](https://pixycam.com/downloads-pixy2/) - Software that enables parameterising the camera
+* [Ubidots STEM](https://ubidots.com/stem) - Platform that provides tools and resources for IoT projects, used for Cloud Storage and Web Interface
+* [Zapier](https://zapier.com/) - Web-based automation tool that can automate tasks that connect two or more apps together
+* [Pixy2 Library](https://pixycam.com/downloads-pixy2/) - 
+* [HttpClient Library](https://maven.apache.org/) - Build Tool and Dependency Management
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on for testing purposes.  
+
+### Assembly Instructions
+
+Describe step-by-step assembly instructions.
+
+When necessary, and especially when wiring is involved, include diagrams/photos.
+
+### Software Prerequisites
+
+In this section include detailed instructions for installing additiona software the application is dependent upon (such as PostgreSQL database, for example).
+
+```
+installation command
+```
+
+### Installation
+
+Give step-by-step instructions on building and running the application on the testing environment. 
+
+Describe the step.
+
+```
+Give the command example
+```
+
+And repeat.
+
+```
+until finished
+```
+
+You can also add screenshots to show expected results, when relevant.
+
+### Testing
+
+Explain how to run the tests for this system.
+
+Give users explicit instructions on how to run all necessary tests. 
+
+Explain what these tests do and why
+
+```
+Give an example command
+```
+
+## Demo
+
+Give a tour of the best features of the application.
+Add screenshots when relevant.
+
+## Deployment
+
+Add additional notes about how to deploy this on a host or a cloud provider.
+
+Mention virtualization/container tools and commands.
+
+```
+Give an example command
+```
+
+Provide instructions for connecting to servers and tell clients how to obtain necessary permissions.
+
+## Additional Information
+
+### Authors
+
+* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+### Versioning
+
+We use [SemVer](http://semver.org/) for versioning. 
+For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+### Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+### Acknowledgments
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
+
+
+
+
+...
 
 ## Required Libraries
 
@@ -15,6 +152,7 @@ pip install requests
 ### Arduino Uno
 
 * download the library for the Pixy2 camera [here](https://github.com/charmedlabs/pixy2/raw/master/releases/arduino/arduino_pixy2-1.0.3.zip) and in Arduino IDE install it by going to Sketch ➜ Include Library ➜ Add .ZIP Library… and choosing the downloaded file.
+* install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
 
 ### Arduino Nano ESP32
 

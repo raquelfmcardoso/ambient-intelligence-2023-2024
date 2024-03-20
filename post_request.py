@@ -10,7 +10,6 @@ VARIABLE_LABEL_1 = "medication 1"
 VARIABLE_LABEL_2 = "medication 2"
 VARIABLE_LABEL_3 = "medication 3"
 
-# Open serial connection to Arduino
 ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
 print("Reading data from serial port.....");
 time.sleep(2)
