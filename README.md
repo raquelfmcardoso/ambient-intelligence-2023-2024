@@ -69,9 +69,24 @@ Description:
 
 In this section include detailed instructions for installing additiona software the application is dependent upon (such as PostgreSQL database, for example).
 
+The following libraries are required for this:
+
+#### Python 3.11
+Execute the following commands:
+```console
+pip install pyserial
+pip install requests
 ```
-installation command
-```
+
+#### Arduino Uno
+
+* download the library for the Pixy2 camera [here](https://github.com/charmedlabs/pixy2/raw/master/releases/arduino/arduino_pixy2-1.0.3.zip) and in Arduino IDE install it by going to Sketch ➜ Include Library ➜ Add .ZIP Library… and choosing the downloaded file.
+* install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
+
+#### Arduino Nano ESP32
+
+* install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
+* download the library HttpClient by going to Sketch ➜ Include Library ➜ Manage Libraries... and once in the Library Manager, search for HttpClient by Adrian McEwen.
 
 ### Installation
 
@@ -123,6 +138,10 @@ Provide instructions for connecting to servers and tell clients how to obtain ne
 ## Additional Information
 
 ### Authors
+
+* **Inês Ji** - [jiyiru](https://github.com/jiyiru)
+* **Raquel Cardoso** - [raquelfmcardoso](https://github.com/raquelfmcardoso)
+* **Jiqi Wang** - [JiqiWang](https://github.com/JiqiWang)
 
 * **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
 
