@@ -64,7 +64,7 @@ Description:
 #### Step 2. Arduino Uno Assembly
 
 1. Connect the Pixy2 to the the Arduino Uno using a Pixy IO to Arduino ISP Cable.
-2. Connect Pixy2 to the computer using a USB cable to supply its' power.
+2. Connect Pixy2 to the computer using a Micro-USB cable to supply its' power.
 3. Connect the Arduino Uno to the computer using an USB cable to supply its' power.
 
 ### Software Prerequisites
@@ -168,8 +168,6 @@ To access Ubidots, follow these steps:
 * **Inês Ji** - [jiyiru](https://github.com/jiyiru)
 * **Raquel Cardoso** - [raquelfmcardoso](https://github.com/raquelfmcardoso)
 * **Jiqi Wang** - [JiqiWang](https://github.com/JiqiWang)
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 

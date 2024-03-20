@@ -1,4 +1,3 @@
-import requests
 import time
 import datetime
 import serial
@@ -21,20 +20,25 @@ VARIABLE_LABELS = [
 ser = serial.Serial('COM4', 115200)  # Replace 'COM4' with the appropriate COM port
 ser_lock = threading.Lock()
 
-def get_request(label):
-    variable_data = {}
-    url = "http://industrial.api.ubidots.com"
-    url = "{}/api/v1.6/devices/{}".format(url, DEVICE_LABEL)
-    headers = {"X-Auth-Token": TOKEN, "Content-Type": "application/json"}
-    
-    message = "Error: Unable to fetch data for variable 1."
-    return message
+def simulate_request_exception():
+    # Simulate an exception being raised within the try block
+    raise Exception("Simulated exception occurred.")
 
-def print_to_serial(label, message):
-    msg = f"{message}\n"
+def get_request(label):
+    try:
+        simulate_request_exception()
+    except Exception as e:
+        exception = f"Error: {e}"
+        with ser_lock:
+            ser.write(exception.encode())
+            print(exception)
+        return None
+
+def print_to_serial(label, variable_data):
+    message = f"{label},{variable_data['timestamp'][1]},{variable_data['value']},{variable_data['last_value']}\n"
     with ser_lock:
-        ser.write(msg.encode())
-        print(msg)
+        ser.write(message.encode())
+        print(message)
 
 def read_from_serial():
     while True:
@@ -44,12 +48,13 @@ def read_from_serial():
                 print("Received from Arduino:", received_data)
 
 def main():
-    for label in VARIABLE_LABELS:
-        message = get_request(label)
-        print(message)
-        print_to_serial(label, message)
-            
-    time.sleep(60)
+    if datetime.datetime.now().second == 0:
+        for label in VARIABLE_LABELS:
+            variable_data = get_request(label)
+            if variable_data:
+                print(variable_data)
+                print_to_serial(label, variable_data)
+                
 
 if __name__ == '__main__':
     read_thread = threading.Thread(target=read_from_serial)
