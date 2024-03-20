@@ -48,20 +48,22 @@ Describe step-by-step assembly instructions.
 
 When necessary, and especially when wiring is involved, include diagrams/photos.
 
-Step 1. Arduino Nano ESP32 Assembly
+#### Step 1. Arduino Nano ESP32 Assembly
 
 Connect the components to the breadboard as shown in the following diagram:
+
 ![alt text](images/ArduinoNanoESP32_Assembly.png)
 
 Description: 
 1. Connect each Green LED to pins D3, D4, and D5 on the Arduino board using a 220-ohm resistor for each.  Attach one end of the resistor to the corresponding pin (D3, D4, or D5) using a wire and the other end to the positive (anode) leg of the LED using a jump wire. Connect the negative (cathode) leg of the LED to ground (GND) on the Arduino board using a jump wire.
 2. Connect the RGB LED module to pin D2. Connect the pin labeled "R" on the LED to the pin D2 using a jump wire. Connect the Common (Cathode-) pin to ground (GND) on the Arduino board using a jump wire.
 3. Connect the Piezzo Buzzer to pin D12. Connect the positive (anode) leg of the buzzer to the pin D12 using a jump wire and connect the negative (cathode) leg of the buzzer to the ground (GND) on the Arduino board using a jump wire.
-4. Connect the Arduino using a USB-C cable to the computer to supply its' power.
+4. Connect the Arduino Nano ESP32 to the computer using a USB-C cable to supply its' power.
 
-Step 2. Arduino Uno Assembly 
+#### Step 2. Arduino Uno Assembly 
 1. Connect the Pixy2 to the the Arduino Uno using a Pixy IO to Arduino ISP Cable.
-2. Connect both of them using a USB Cable to the computer to supply its' power.
+2. Connect Pixy2 to the computer using a USB cable to supply its' power.
+3. Connect the Arduino Uno to the computer using an USB cable to supply its' power.
 
 ### Software Prerequisites
 
