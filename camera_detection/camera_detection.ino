@@ -34,7 +34,7 @@ void loop()
   }
   
   Serial.println("");
-  delay(20000);
+  delay(60000);
 }
 
 // Count the number of pills in a given area
