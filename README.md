@@ -51,7 +51,7 @@ When necessary, and especially when wiring is involved, include diagrams/photos.
 Step 1. Arduino Nano ESP32 Assembly
 
 Connect the components to the breadboard as shown in the following diagram:
-![alt text](ArduinoNanoESP32_Assembly.png)
+![alt text](images/ArduinoNanoESP32_Assembly.png)
 
 Description: 
 1. Connect each Green LED to pins D3, D4, and D5 on the Arduino board using a 220-ohm resistor for each.  Attach one end of the resistor to the corresponding pin (D3, D4, or D5) using a wire and the other end to the positive (anode) leg of the LED using a jump wire. Connect the negative (cathode) leg of the LED to ground (GND) on the Arduino board using a jump wire.
