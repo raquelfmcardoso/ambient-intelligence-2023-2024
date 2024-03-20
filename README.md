@@ -4,7 +4,7 @@ Our solution aims to alleviate the struggle of medication adherence by uniting a
 
 ## General Information
 
-The major benefits of our solution are the automation of the medication intake process, the ability to keep track of the medication inventory and the possibility of sending reminders to the user. This is a problem felt by many individuals all over the globe that often encounter challenges in adhering to their prescribed medication schedules, due to factors such as age, stress, memory loss, etc.
+The major benefits of our solution are the automation of the medication intake process, the ability to keep track of the medication inventory and the possibility of sending email notifications to the user. This is a problem felt by many individuals all over the globe that often encounter challenges in adhering to their prescribed medication schedules, due to factors such as age, stress, memory loss, etc.
 This struggle with medication adherence can lead to detrimental consequences, including ineffective treatments, deteriorating health conditions, and, in severe cases, death.
 
 ## Built With
@@ -22,21 +22,21 @@ If you mention something, please provide links.
 * [Green LED Alert](https://www.exploringarduino.com/parts/green-led/) - 3 units - green light-emitting diode (LED) connected to the Arduino Nano ESP32 development board used to provide visual feedback to the user when it's time to take their medication.
 * [RGB Module](https://arduinomodules.info/ky-016-rgb-full-color-led-module/) - 1 unit - Electronic component connected to the Arduino Nano ESP32 development board, used to provide visual feedback to the user when the Cloud Platform is offline.
 * [Piezzo Buzzer](https://www.adafruit.com/product/160) - 1 unit - Electronic component connected to the Arduino Nano ESP32 development board, used to provide auditory feedback to the user when it's time to take their medication.
-* [Resistors](https://en.wikipedia.org/wiki/List_of_electronic_color_code_mnemonics) - 3 units - Electronic components used to limit the flow of electric current to the LED Alerts.
+* [Resistors](https://en.wikipedia.org/wiki/Resistor) - 3 units - Electronic components used to limit the flow of electric current to the LED Alerts.
 * [USB Cable](https://store.arduino.cc/products/usb-2-0-cable-type-a-b) - 1 unit - Connects the Arduino Uno development board to the computer that supplies its' power.
-* [USB Cable](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:powering_pixy#usb-cableconnector) - 1 unit - Connects the Pixy2 Camera to the computer that supplies its' power.
+* [Micro-USB Cable](https://core-electronics.com.au/media/catalog/product/cache/d5cf359726a1656c2b36f3682d3bbc67/1/4/14678-pixy2_cmucam5-06.jpg) - 1 unit - Connects the Pixy2 Camera to the computer that supplies its' power.
 * [USB-C Cable](https://store.arduino.cc/products/usb-cable2in1-type-c) - 1 unit - Connects the Arduino Nano ESP32 development board to the computer that supplies its' power.
 * [Pixy IO to Arduino ISP Cable](https://cdn.sparkfun.com/r/345-345/assets/parts/1/2/8/8/0/14678-Pixy2_CMUcam5-05.jpg) - 1 unit - Connects the Pixy2 camera to the Arduino Uno development board so they can communicate.
 
 ### Software
 
-* [Arduino Programming Language](https://www.raspberrypi.com/software/) - Programming Language
-* [Python](https://openjdk.java.net/) - Programming Language
+* [Arduino Programming Language](https://www.arduino.cc/reference/en/) - Programming Language
+* [Python](https://www.python.org/) - Programming Language
 * [PixyMon](https://pixycam.com/downloads-pixy2/) - Software that enables parameterising the camera
 * [Ubidots STEM](https://ubidots.com/stem) - Platform that provides tools and resources for IoT projects, used for Cloud Storage and Web Interface
 * [Zapier](https://zapier.com/) - Web-based automation tool that can automate tasks that connect two or more apps together
-* [Pixy2 Library](https://pixycam.com/downloads-pixy2/) - 
-* [HttpClient Library](https://maven.apache.org/) - Build Tool and Dependency Management
+* [Pixy2 Library](https://pixycam.com/downloads-pixy2/) - Software package that provides a set of functions and tools to interact with the Pixy2 Camera, making it easy to integrate in projects.
+* [HttpClient Library](https://www.arduino.cc/reference/en/libraries/httpclient/) - Library to easily make HTTP GET, POST and PUT requests to a web server.
 
 ## Getting Started
 
@@ -52,15 +52,17 @@ When necessary, and especially when wiring is involved, include diagrams/photos.
 
 Connect the components to the breadboard as shown in the following diagram:
 
-![alt text](images/ArduinoNanoESP32_Assembly.png)
+![Arduino Nano ESP32 Assembly Diagram](images/ArduinoNanoESP32_Assembly.png)
 
-Description: 
+Description:
+
 1. Connect each Green LED to pins D3, D4, and D5 on the Arduino board using a 220-ohm resistor for each.  Attach one end of the resistor to the corresponding pin (D3, D4, or D5) using a wire and the other end to the positive (anode) leg of the LED using a jump wire. Connect the negative (cathode) leg of the LED to ground (GND) on the Arduino board using a jump wire.
 2. Connect the RGB LED module to pin D2. Connect the pin labeled "R" on the LED to the pin D2 using a jump wire. Connect the Common (Cathode-) pin to ground (GND) on the Arduino board using a jump wire.
 3. Connect the Piezzo Buzzer to pin D12. Connect the positive (anode) leg of the buzzer to the pin D12 using a jump wire and connect the negative (cathode) leg of the buzzer to the ground (GND) on the Arduino board using a jump wire.
 4. Connect the Arduino Nano ESP32 to the computer using a USB-C cable to supply its' power.
 
-#### Step 2. Arduino Uno Assembly 
+#### Step 2. Arduino Uno Assembly
+
 1. Connect the Pixy2 to the the Arduino Uno using a Pixy IO to Arduino ISP Cable.
 2. Connect Pixy2 to the computer using a USB cable to supply its' power.
 3. Connect the Arduino Uno to the computer using an USB cable to supply its' power.
@@ -80,8 +82,8 @@ pip install requests
 
 #### Arduino Uno
 
+* install the board for the Arduino Uno by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino AVR Boards by Arduino.
 * download the library for the Pixy2 camera [here](https://github.com/charmedlabs/pixy2/raw/master/releases/arduino/arduino_pixy2-1.0.3.zip) and in Arduino IDE install it by going to Sketch ➜ Include Library ➜ Add .ZIP Library… and choosing the downloaded file.
-* install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
 
 #### Arduino Nano ESP32
 
@@ -90,19 +92,24 @@ pip install requests
 
 ### Installation
 
-Give step-by-step instructions on building and running the application on the testing environment. 
+Give step-by-step instructions on building and running the application on the testing environment.
 
-Describe the step.
+Before running the system, make sure to comply to these prerequisites:
 
-```
-Give the command example
-```
+* All libraries were downloaded.
+* In the file ```smart_pill_organizer/smart_pill_organizer.ino``` replaced the WIFI_SSID and WIFI_PASSWORD fields with the credentials of your Wi-Fi network.
+* Ensure that in the file `post_request.py`, the COM port is correctly set to match the one your Arduino Uno is using.
+* Ensure that in the file `get_request.py`, the COM port is correctly set to match the one your Arduino Nano ESP32 is using.
+* Ensure that in the file `testing/ubidots_down_test.py`, the COM port is correctly set to match the one your Arduino Nano ESP32 is using.
 
-And repeat.
+To get the system up and running please follow these steps:
 
-```
-until finished
-```
+1. Open the file `camera_detection/camera_detection.ino` in Arduino IDE, select the Arduino Uno board and upload it.
+2. Open the file `smart_pill_organizer/smart_pill_organizer.ino` in Arduino IDE, select the Arduino Nano ESP32 board, change the Wi-Fi credentials and upload it onto the board.
+3. Close the Arduino IDE.
+4. On the project root, open a terminal and run the command ```python post_request.py```
+5. On the project root, open another terminal and run the command ```python get_request.py```
+6. Let both scripts run and interact with the Smart Pill Organizer.
 
 You can also add screenshots to show expected results, when relevant.
 
@@ -134,6 +141,25 @@ Give an example command
 ```
 
 Provide instructions for connecting to servers and tell clients how to obtain necessary permissions.
+
+#### Ubidots STEM
+
+To access Ubidots, follow these steps:
+
+1. Go [here](https://stem.ubidots.com/accounts/signin/) and log in with the following credentials:
+    * Username: `smartpillorganizer_AmI05`
+    * Password: `jfv9JhOWNgG9viyj4Blo`
+2. Our web interface is located on Data ➜ Dashboards. In the dashboard you are able to see the current inventory, inventory history and insert medication's prescription time.
+3. To check variables values go to Devices ➜ Devices ➜ Click on `smart_pill_organizer`
+
+#### Zapier
+
+1. Go [here](https://zapier.com/app/login) and log in with the following credentials:
+    * Username: `smartpillbox.amia05@gmail.com`
+    * Password: `EmpdGpzaal85NslXFGyb`
+2. The zap that allows the automation of emails can be accessed through: Starting at Home ➜ Zaps ➜ Click on `Smart Pill Organizer Email Automation`. 
+3. The zap can also be edited by clicking on the [link](https://zapier.com/editor/231593518/published).
+4. If you wish to add your email to the receivers lists, on the zap (link above), click on `2. Send Email in Gmail` and add the desired email clicking on Step details ➜ Bcc.
 
 ## Additional Information
 
@@ -193,7 +219,7 @@ pip install requests
 * install the board for the Arduino Nano ESP32 by going to Tools ➜ Board ➜ Boards Manager... and once in the Boards Manager, search for Arduino ESP32 Boards by Arduino.
 * download the library HttpClient by going to Sketch ➜ Include Library ➜ Manage Libraries... and once in the Library Manager, search for HttpClient by Adrian McEwen.
 
-## Prerequisites
+### Prerequisites
 
 Before you begin, ensure you have...:
 
