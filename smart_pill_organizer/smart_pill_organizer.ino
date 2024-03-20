@@ -209,7 +209,7 @@ void checkInventory(int i) {
     // Check if the specified interval has passed to check the inventory status of the pill 
     if (currentMillis - previousMillis >= interval) {
       previousMillis = currentMillis;
-      sendMessage("Please restock pill " + String(i+1) + ", it only has " + String(inventory[i].value) + ".");
+      sendMessage("Please restock inventory of medication #" + String(i+1) + " immediately, it only has " + String(inventory[i].value) + " pill.");
     }
   } else {
     inventoryAlertFlag[i] = 0;
@@ -231,20 +231,20 @@ void checkPillsEvent(int i) {
     if (prescribedTime[i].hour == timeinfo.tm_hour && prescribedTime[i].minute == timeinfo.tm_min) {
        // Check if the inventory level is consistent (pill not taken)
       if(inventory[i].value == inventory[i].lastValue) {
-        message = sendMessage("Time to take pill " + String(i+1) + ".");
+        message = sendMessage("Time to take a pill of medication #" + String(i+1) + ".");
         pillEventFlag[i] = 1;
         buzzer();
         analogWrite(PILL_PINS[i], 255);  
       }
       // If the pill was taken at an incorrect time
     } else if (inventory[i].value < inventory[i].lastValue) {
-        message = sendMessage("The pill " + String(i+1) + " was taken at the incorrect time.");
+        message = sendMessage("A pill of medication #" + String(i+1) + " was taken at the incorrect time.");
       }
     // If pill event flag is already set
   } else if (pillEventFlag[i] == 1) {
     // If the pill is taken at the correct time
     if (inventory[i].value < inventory[i].lastValue) {
-      message = sendMessage("The pill " + String(i+1) + " was taken at the correct time.");
+      message = sendMessage("A pill of medication #" + String(i+1) + " was taken at the correct time.");
       pillEventFlag[i] = 0;
       // If all pill events are off, stop the buzzer
       if (checkPositiveFlag() == 0) {
@@ -253,7 +253,7 @@ void checkPillsEvent(int i) {
       analogWrite(PILL_PINS[i], 0);
       // If 5 minutes have passed since the prescribed time
     } else if (turnOffFiveMinutes(prescribedTime[i]) == 1) {
-      message = sendMessage("5 minutes have passed since the time to take the pill " + String(i+1) + ".");
+      message = sendMessage("Already passed 5 minutes since the scheduled time to consume medication #" + String(i+1) + " - missed dosage.");
       pillEventFlag[i] = 0;
       // If all pill events are off, stop the buzzer
       if (checkPositiveFlag() == 0) {
